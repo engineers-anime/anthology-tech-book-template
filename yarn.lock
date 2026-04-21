@@ -8358,9 +8358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"study-from-anime-tbf30@workspace:.":
+"anthology-tech-book-template@workspace:.":
   version: 0.0.0-use.local
-  resolution: "study-from-anime-tbf30@workspace:."
+  resolution: "anthology-tech-book-template@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.4.8"
     "@textlint-ja/textlint-rule-preset-ai-writing": "npm:^1.6.1"
