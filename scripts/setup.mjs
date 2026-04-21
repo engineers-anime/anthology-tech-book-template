@@ -46,81 +46,95 @@ const MAIN_QUESTIONS = [
 async function setup() {
   console.log('--- エンジニアニメ 執筆環境セットアップ ---');
   
-  let currentState = {};
+  // 前回の状態を読み込む
+  let prevState = {};
   try {
     const data = await fs.readFile(STATE_FILE, 'utf8');
-    currentState = JSON.parse(data);
-    console.log('※前回の設定内容を読み込みました。やり直す場合は新しい値を入力してください。');
+    prevState = JSON.parse(data);
+    console.log('※前回の設定内容を読み込みました。');
   } catch (e) {
-    // 初回：タグを基準にする
-    const packageJson = JSON.parse(await fs.readFile('package.json', 'utf8'));
-    for (const q of MAIN_QUESTIONS) currentState[q.tag] = `{{${q.tag}}}`;
-    currentState['REPOSITORY_NAME'] = packageJson.name;
-    currentState['REPOSITORY_GIT_URL'] = `{{REPOSITORY_GIT_URL}}`;
+    console.log('※初回セットアップを開始します。');
   }
+
+  // package.json の現在の名前を REPOSITORY_NAME の初期値候補にする
+  const packageJson = JSON.parse(await fs.readFile('package.json', 'utf8'));
+  const currentPackageName = packageJson.name;
 
   const answers = {};
   for (const q of MAIN_QUESTIONS) {
-    const displayDefault = (currentState[q.tag] && !currentState[q.tag].startsWith('{{')) ? currentState[q.tag] : q.default;
+    const displayDefault = prevState[q.tag] || q.default;
     const answer = await rl.question(`${q.label} [${displayDefault}]: `);
     answers[q.tag] = answer.trim() || displayDefault;
   }
   rl.close();
 
-  // URLからリポジトリ情報を自動生成
+  // 自動算出
   try {
     const repoUrl = answers.REPOSITORY_URL.replace(/\/$/, '');
-    const repoPath = new URL(repoUrl).pathname.slice(1); // "owner/repo"
+    const repoPath = new URL(repoUrl).pathname.slice(1);
     answers.REPOSITORY_NAME = repoPath.split('/').pop();
     answers.REPOSITORY_GIT_URL = `git@github.com:${repoPath}.git`;
   } catch (e) {
-    answers.REPOSITORY_NAME = currentState['REPOSITORY_NAME'] || 'repo-name';
-    answers.REPOSITORY_GIT_URL = currentState['REPOSITORY_GIT_URL'] || 'git@github.com:user/repo.git';
+    answers.REPOSITORY_NAME = currentPackageName;
+    answers.REPOSITORY_GIT_URL = `git@github.com:unknown/repo.git`;
   }
-  
-  console.log('\n設定を適用しています...');
 
-  let nameChanged = false;
-  const allTags = Object.keys(answers);
+  console.log('\n設定を適用しています...');
 
   for (const filePath of TARGET_FILES) {
     try {
       const fullPath = path.resolve(process.cwd(), filePath);
       let content = await fs.readFile(fullPath, 'utf8');
+      let updated = false;
 
-      for (const tag of allTags) {
-        const oldValue = currentState[tag] || `{{${tag}}}`;
-        const newValue = answers[tag];
-        if (oldValue === newValue) continue;
+      for (const [tag, newValue] of Object.entries(answers)) {
+        // 1. タグ形式 {{TAG}} を置換
+        const tagPlaceholder = `{{${tag}}}`;
+        if (content.includes(tagPlaceholder)) {
+          content = content.split(tagPlaceholder).join(newValue);
+          updated = true;
+        }
 
-        if (tag === 'REPOSITORY_NAME' && filePath === 'package.json') nameChanged = true;
-
-        const regex = new RegExp(oldValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-        content = content.replace(regex, newValue);
+        // 2. 前回の値があれば、それも置換（やり直し用）
+        const oldValue = prevState[tag];
+        if (oldValue && oldValue !== newValue && content.includes(oldValue)) {
+          content = content.split(oldValue).join(newValue);
+          updated = true;
+        }
+        
+        // 特殊ケース: REPOSITORY_NAME が package.json の name にそのまま入っている場合
+        if (tag === 'REPOSITORY_NAME' && filePath === 'package.json' && content.includes(`"name": "${currentPackageName}"`)) {
+          content = content.replace(`"name": "${currentPackageName}"`, `"name": "${newValue}"`);
+          updated = true;
+        }
       }
-      await fs.writeFile(fullPath, content, 'utf8');
-      console.log(`✔ Updated: ${filePath}`);
+
+      if (updated) {
+        await fs.writeFile(fullPath, content, 'utf8');
+        console.log(`✔ Updated: ${filePath}`);
+      } else {
+        console.log(`- No changes needed: ${filePath}`);
+      }
     } catch (err) {
       console.error(`✘ Error updating ${filePath}: ${err.message}`);
     }
   }
 
+  // 状態を保存
   await fs.writeFile(STATE_FILE, JSON.stringify(answers, null, 2), 'utf8');
 
-  if (nameChanged) {
-    console.log('\nパッケージ名を更新中...');
-    try { 
-      execSync('corepack yarn install', { stdio: 'inherit' }); 
+  // package.json の名前が変わった場合のみ yarn install
+  if (currentPackageName !== answers.REPOSITORY_NAME) {
+    console.log('\nパッケージ名が変更されたため、yarn.lock を更新しています...');
+    try {
+      execSync('corepack yarn install', { stdio: 'inherit' });
       console.log('✔ yarn.lock が更新されました。');
-    } catch (e) {
+    } catch (err) {
       console.warn('⚠ yarn install に失敗しました。手動で `yarn install` を実行してください。');
     }
   }
 
-  console.log('\nセットアップ完了！');
+  console.log('\nセットアップが完了しました！');
 }
 
-setup().catch((err) => {
-  console.error('\nセットアップ中にエラーが発生しました:', err.message);
-  console.log('\n解決できない場合は node scripts/setup.mjs を直接実行してください。');
-});
+setup().catch(console.error);
