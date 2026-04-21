@@ -1,144 +1,81 @@
-# daigirin-template
+# {{BOOK_TITLE}}
 
-技術同人誌のテンプレートリポジトリです。新しい同人誌を作成するときは、このリポジトリを利用してください。
+エンジニアリングとアニメ（あるいはアニメ文化）をテーマにした技術同人誌「{{BOOK_TITLE}}」を制作するためのリポジトリです。
+本書は **[{{EVENT_NAME}}]({{EVENT_URL}})** での頒布を予定しています。
 
-## PDF の生成方法
+## 初期セットアップ
+
+本リポジトリをクローンした後、以下のコマンドを実行して書籍名やイベント情報を設定してください。
+（Yarnの整合性チェックを避けるため、直接Node.jsで実行します）
+
+```shell
+node scripts/setup.mjs
+```
+
+## スケジュール
+
+{{EVENT_DATE}} の {{EVENT_NAME}} オフラインイベントに向けたスケジュールです。
+
+| 日付 | 作業内容 |
+| :--- | :--- |
+| {{DUE_DATE_MANUSCRIPT}} | **原稿締切** |
+| {{DUE_DATE_PAGE_CONFIRM}} | ページ数確定、表紙印刷データの背表紙調整 |
+| {{DUE_DATE_COVER}} | 表紙締切（入稿データの背表紙調整含む） |
+| {{DUE_DATE_SUBMISSION}} | **入稿**（オフセット印刷 40% OFF） |
+| {{EVENT_DATE}} | **{{EVENT_NAME}} オフラインイベント当日** |
+
+印刷は [{{PRINTER_NAME}}]({{PRINTER_URL}}) を予定しています。
+バッファを持たせていますが、締め切りまでに原稿を提出してください。
+
+## 寄稿方法
+
+1. **Issueへの投稿**: 原稿を書き始めたら、 [Issue]({{REPOSITORY_URL}}/issues) に概要を投稿してください。テンプレートを用意していますので、執筆予定の章のタイトルなどを記入してください。
+2. **プッシュ**: 原稿が書けたら、 [本リポジトリ]({{REPOSITORY_URL}}) にブランチを切ってプッシュしてください。
+3. **執筆マニュアル**: 具体的な執筆・入稿フローは [こちらの執筆マニュアル](./docs/manual.md) で説明しています。不明点があればこちらをご確認ください。
+
+## 注意事項
+
+- **謝礼について**: 執筆者に謝礼をお支払いすることはできません。あらかじめご了承ください。
+- **献本**: 執筆に参加してくださった方には、完成した本を1冊無料でお渡しします（遠方の方には郵送も可能です）。
+- **打ち上げ**: 売上状況に応じて打ち上げを検討しています。赤字の場合は実費での割り勘開催となります。
+- **引用ルール**: 画像や文章を引用する際は、引用元を明示し、出典と引用の範囲が明確になるよう注意してください。
+- **販売価格**: 1冊500円〜1,000円程度で検討中です（印刷費等を考慮し決定します）。
+
+---
+
+## PDF の生成方法（開発者向け）
 
 ```shell
 make run
 ```
 
-🔖 [グローバル環境を可能な限り汚染せずに Markdown から組版の PDF を生成（ゆめみ大技林 '23）](https://zenn.dev/yumemi_inc/articles/afe7745cd62af2)
+🔖 [グローバル環境を可能な限り汚染せずに Markdown から組版の PDF を生成](https://zenn.dev/yumemi_inc/articles/afe7745cd62af2)
 
 ### 電子版 PDF に表紙画像を追加する
 
-表紙画像をプロジェクト内の `book/cover/cover.png` に保存している場合は、電子版 PDF と表紙画像の結合をコマンドで実行できます。次のコマンドで、表紙画像を結合した PDF `output/ebook_covered.pdf` を生成します。なお、電子版 PDF は事前に生成しておいてください。
+表紙画像を `book/cover/cover.png` に保存している場合、次のコマンドで表紙結合済み PDF（`output/ebook_covered.pdf`）を生成できます。
 
 ```shell
 make cover
 ```
 
-結合後の PDF に質の問題がある場合や、表紙画像がリポジトリ管理できない場合は、手動で結合（Acrobat Pro で PDF に画像を挿入するなど）してください。
-
-### リリース
-
-次のコマンドで印刷入稿用 PDF が作成されます。
+### 印刷用 PDF の作成
 
 ```shell
 make pdf_press
 ```
 
-もしくは、GitHub でタグに「n 版」または「n 版 m 刷」（たとえば、`初版`、`初版2刷` や `第二版一刷` など）を付けてプッシュすると、電子版および印刷入稿用 PDF を添付したリリースが作成されます。`cover` ディレクトリに表紙画像や PSD ファイルがある場合は、それらもアセットに追加します。
-
-## 書籍の設定
-
-書籍のタイトルの設定などは、[book/vivliostyle.config.js](book/vivliostyle.config.js) ファイルで行います。
-
-またテンプレートの都合上、年号等が最新に設定できないため、`<!-- -->` でコメントアウトしています。必要に応じて修正してコメントアウトを外してください。
-
 ## 原稿の追加方法
 
-- [book/manuscripts](book/manuscripts) ディレクトリの中に、拡張子 `.md` の Markdown ファイルを作成します。
-- [book/vivliostyle.config.js](book/vivliostyle.config.js) ファイル内の `entry` 配列に、その Markdown ファイル名を追加します。
+- `book/manuscripts` ディレクトリに `.md` ファイルを作成します。
+- `book/vivliostyle.config.js` の `entry` 配列にファイル名を追加します。
 
-## 文章校正
-
-校正ツール [textlint](https://textlint.github.io/) を利用して、文章校正ができます。なお、この lint ツールの使用は任意です。書き方で悩んだ・校正したい場合など、必要に応じて導入してください。
-
-### ルール
-
-次のルールを導入しています。
-
-- preset-ja-spacing
-  - 日本語周りにおけるスペースの有無を決定する
-- preset-ja-technical-writing
-  - 技術文書向けの textlint ルールプリセット
-- textlint-rule-spellcheck-tech-word
-  - WEB+DB 用語統一ルールベースの単語チェック
-  - （deprecated になっているので置き換えたい）
-- Rules for TechBooster
-  - TechBooster の [ルール](https://github.com/TechBooster/ReVIEW-Template/tree/master/prh-rules) を使用しています。
-  - iOS に関するルールはほとんどないので適宜追加してください。
-
-その他、スペルチェックのルール `textlint-rule-spellchecker` がありますが、エディターのスペルチェックと競合しやすいので、今回は追加していません。VS Code を利用している場合は、プラグイン [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) を追加すれば、スペルチェックが行われます。
-
-### ローカル環境で実行する
+## 文章校正 (textlint)
 
 ```shell
 make lint
 ```
-
-### VS Code + Node.js で実行する
-
-ローカルに Node.js 環境がある場合は、VS Code のプラグイン `taichi.vscode-textlint` を導入することで、ファイル保存時に textlint が実行されます。
-
-### VS Code + Docker で実行する
-
-VS Code にプラグイン [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) を追加します。コマンドパレット（ショートカットキー Command + Shift + P）を開いて、`Remote-Containers: Reopen in Container` を実行します。コンテナーが立ち上がったら、執筆を始めてください。ファイル保存時に textlint が自動実行されます。ただし、Docker を利用する場合は、ライセンスに注意して利用してください。
-
-### 無効
-
-あるファイルを textlint の対象から外したい場合は `.textlintignore` にそのファイルを追加してください。また、ファイル内の特定の文章に対してルールを無効にしたい場合は、次のように記述してください。
-
-```text
-<!-- textlint-disable -->
-
-textlint を無効にしたい文章をここに書く
-
-<!-- textlint-enable -->
-```
-
-## ローカル環境の Node.js でビルドする
-
-ローカル環境に Node.js がインストールされている場合は、Docker を使わずにビルドできます。
-
-### 準備
-
-次のコマンドで、ビルドに必要なツールをローカル環境にインストールします。
-
-```shell
-yarn install
-```
-
-プレス版の PDF をビルドするには、Ghostscript および Xpdf も必要になります。次のコマンドでインストールします。
-
-```shell
-brew install ghostscript
-brew install xpdf
-```
-
-Yarn を利用する場合は corepack を有効にしてください。
-
-```shell
-corepack enable
-または
-corepack enable yarn
-```
-
-### 実行
-
-- `yarn start` : pdf を生成して開く（`make run` 相当）
-- `yarn lint` : textlint を実行（`make lint` 相当）
-- `yarn build` : pdf を生成（`make pdf` 相当）
-- `yarn build:press` : プレス版の pdf を生成（`make pdf_press` 相当）
-- `yarn cover` : 電子版 pdf と表紙画像を結合する（`make cover` 相当）
-- `yarn open` : pdf を開く（`make open` 相当）
-- `yarn clean` : 生成ファイルをすべて削除（`make clean` 相当）
-
-## セキュリティ対策
-
-ローカルおよび CI で、[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) を利用して、npm パッケージの安全性を確認できます。
-
-### ローカル環境
-
-[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) の README にしたがって、ローカル環境にインストールしてください。なお、Docker を利用される場合は、安全確認したパッケージがインストールされるので原則的に対応不要です。
-
-### CI
-
-package.json の変更を含む PR が作成されたら、GitHub Actions でパッケージが確認されます。なお、Actions で利用する`@aikidosec/safe-chain` はバージョン固定しています。`@aikidosec/safe-chain` が更新されたら、それ自身の安全性を確認した後に、次のファイルを更新してください。
-
-- `.github/workflows/aikidosec-safe-chain.yml`
-	- `name: Install safe-chain` の `export SAFE_CHAIN_VERSION=1.3.2` で指定するバージョンを更新する
+詳細はリポジトリ内の設定ファイルをご確認ください。
 
 ## ライセンス
 
@@ -146,4 +83,4 @@ package.json の変更を含む PR が作成されたら、GitHub Actions でパ
 
 ### 注意事項
 
-- このリポジトリの MIT ライセンスには、ゆめみの紹介文は含まれません。
+- 本リポジトリの MIT ライセンスには、エンジニアニメに関する紹介文や固有のコンテンツは含まれません。
