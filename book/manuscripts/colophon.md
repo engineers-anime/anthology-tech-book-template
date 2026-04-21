@@ -20,6 +20,10 @@ class: exclude-hashira
     <div class="colophon-value">{{BOOK_AUTHOR}}</div>
   </div>
   <div class="colophon-row">
+    <div class="colophon-label">表紙</div>
+    <div class="colophon-value">{{BOOK_COVER}}</div>
+  </div>
+  <div class="colophon-row">
     <div class="colophon-label">印刷</div>
     <div class="colophon-value">{{PRINTER_NAME}}</div>
   </div>

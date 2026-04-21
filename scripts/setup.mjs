@@ -31,6 +31,7 @@ const getRelativeDate = (days) => {
 const MAIN_QUESTIONS = [
   { tag: 'BOOK_TITLE', label: '書籍タイトル', default: 'エンジニアニメAnthology Tech Book' },
   { tag: 'BOOK_AUTHOR', label: '著者名/サークル名', default: 'エンジニアニメ' },
+  { tag: 'BOOK_COVER', label: '表紙イラスト/デザイン', default: '赤城ナツイチ（ @DDDD__akagi ）' },
   { tag: 'REPOSITORY_URL', label: 'GitHub リポジトリURL', default: 'https://github.com/engineers-anime/study-from-anime-tbf20' },
   { tag: 'EVENT_NAME', label: 'イベント名', default: '技術書典20' },
   { tag: 'EVENT_URL', label: 'イベントURL', default: 'https://techbookfest.org/event/tbf20' },
