@@ -1,5 +1,5 @@
 {
-  "name": "anthology-tech-book-templat",
+  "name": "anthology-tech-book-template",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "{{REPOSITORY_GIT_URL}}",
