@@ -15,3 +15,31 @@
     word-wrap: break-word;
     white-space: nowrap;
 }
+
+/**
+ 見出しの下線の色を変更するスタイル
+ */
+div.doc-header {
+  border-color: #ffb958 !important;
+}
+
+div.doc-header::before {
+  border-color: #ffb958 !important;
+}
+
+/**
+ 引用キャプションを右寄せにするスタイル
+
+ @example
+
+ ```md
+ > 引用文
+
+ *――出典*
+ ```
+ */
+blockquote + p > em:only-child {
+    display: block;
+    text-align: right;
+    margin-top: -0.5em;
+}

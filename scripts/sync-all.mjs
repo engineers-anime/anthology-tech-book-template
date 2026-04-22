@@ -131,7 +131,7 @@ async function syncAll() {
   const authorsPath = path.join(rootDir, 'book/manuscripts/authors.md');
   const authorCards = data.authors.map(author => `
 <div class="author_container">
-    <div class="author_icon_container"><img class="author_icon" src="${author.icon}" alt="${author.name}"></div>
+    <div class="author_icon_container"><img class="author_icon" src="images_authors/${author.icon}" alt="${author.name}"></div>
     <div class="author_info_container">
         <div class="author_name"><b>${author.name}</b>（X: ${author.x}）</div>
         <div class="author-info-block">

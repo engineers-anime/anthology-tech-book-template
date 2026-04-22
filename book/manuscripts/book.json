@@ -27,8 +27,9 @@
   "authors": [
     {
       "name": "sample 太郎",
-      "icon": "https://github.com/github.png",
+      "icon": "sample.png",
       "x": "@sample",
+      "discord": "sample",
       "job": "エンジニア",
       "favorites": [
         "彼方のアストラ",
