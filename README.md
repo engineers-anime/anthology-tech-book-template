@@ -73,6 +73,18 @@ make cover
 make pdf_press
 ```
 
+### 自動ページ数通知
+
+GitHub Actions により、原稿が更新されるたびに PDF ページ数を計測し、Discord へ通知する機能が設定されています。
+利用するには、GitHub リポジトリの Settings > Secrets and variables > Actions に `DISCORD_WEBHOOK_URL` を登録してください。
+
+### 進捗状況の確認
+
+プロジェクトの各種進捗状況は、GitHub Actions により自動的に更新されます。
+
+- **[相互レビュー（査読）進捗](./docs/review_status.md)**: Issue の作成やコメントなどのアクションがあった際に自動更新されます。
+- **[執筆宣言・未登録者リスト](./docs/proposal_status.md)**: 新たな執筆宣言があった際や、`book.json` が更新された際に自動更新されます。
+
 ## 原稿の追加方法
 
 - `book/manuscripts` ディレクトリに `.md` ファイルを作成します。

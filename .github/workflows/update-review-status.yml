@@ -1,0 +1,44 @@
+name: Update Review Status
+
+on:
+  issues:
+    types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  workflow_dispatch:
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # コミットとプッシュに必要
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Update Review Status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          yarn sync:reviews
+
+      - name: Commit and Push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/review_status.md
+          if ! git diff --cached --exit-code; then
+            git commit -m "docs: update review status [skip ci]"
+            git push
+          fi

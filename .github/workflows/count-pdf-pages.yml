@@ -1,0 +1,65 @@
+name: Count PDF Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'book/manuscripts/**'
+  workflow_dispatch:
+
+jobs:
+  count-pages:
+    runs-on: ubuntu-latest
+    env:
+      # 生成される PDF のパス
+      EBOOK_PDF_PATH: ./book/output/ebook.pdf
+      EBOOK_COVERED_PDF_PATH: ./book/output/ebook_covered.pdf
+      PRESS_PDF_PATH: ./book/output/press.pdf
+      COVER_PNG_PATH: ./book/cover/cover.png
+      COVER_PSD_PATH: ./book/cover/*.psd
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+
+      # PDFを作成する
+      - name: Make PDFs
+        run: |
+          set -euo pipefail
+          corepack enable
+          yarn install --immutable
+
+          yarn build
+          if [ ! -f "$EBOOK_PDF_PATH" ]; then
+            echo "エラー: 電子版 PDF の生成に失敗しました。"
+            exit 1
+          fi
+
+      - name: Install poppler-utils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - name: Count ebook pages
+        id: pagecount
+        run: |
+          set -euo pipefail
+          EBOOK_PAGES="$(pdfinfo "$EBOOK_PDF_PATH" | awk '/^Pages:/ {print $2}')"
+          echo "電子版 PDF のページ数: ${EBOOK_PAGES}"
+          echo "ebook=${EBOOK_PAGES}" >> "$GITHUB_OUTPUT"
+
+      - name: Report to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          EBOOK_PAGES: ${{ steps.pagecount.outputs.ebook }}
+        run: |
+          set -euo pipefail
+          DATE_JST=$(TZ=Asia/Tokyo date '+%-m/%-d')
+          payload=$(printf '{"content":"--------\\n%s現在\\n\\nページ数は\\n%sページ\\nです！！！！\\n--------"}' "$DATE_JST" "${EBOOK_PAGES:-N/A}")
+          curl -fsSL -H "Content-Type: application/json" -d "$payload" "$DISCORD_WEBHOOK_URL"
