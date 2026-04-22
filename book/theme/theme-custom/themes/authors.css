@@ -1,0 +1,33 @@
+/**
+ 著者紹介ページ用css
+ */
+
+.author_container {
+    display: flex;
+    align-items: center;  
+    margin: 20px 0px;
+    gap: 8px;
+}
+
+.author_icon_container { 
+    flex: 0 0 80px;  
+}
+
+.author_info_container {
+    flex: 1;
+}
+
+.author_icon {
+    display: block; 
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.author_name {
+    padding-bottom: 3px;
+}
+
+.author-info-block {
+    padding-left: 4px;
+}

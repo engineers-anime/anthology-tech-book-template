@@ -39,7 +39,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-# Setup state
+# Sync state
+.sync-state.json
 .setup-state.json
 
 

@@ -13,3 +13,6 @@
 
 /* スタイル一般 */
 @import url(./themes/styles.css);
+
+/* 著者紹介用　*/
+@import url(./themes/authors.css);

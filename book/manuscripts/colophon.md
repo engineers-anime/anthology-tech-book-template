@@ -2,6 +2,9 @@
 class: exclude-hashira
 ---
 
+<!-- Generated from book/manuscripts/book.json -->
+<!-- このファイルは直接編集せずに、book.json を編集してください -->
+
 <!-- markdownlint-disable MD041 -->
 <hr class="page-break" />
 <!-- markdownlint-enable MD041 -->

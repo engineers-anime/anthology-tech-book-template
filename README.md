@@ -1,3 +1,6 @@
+<!-- Generated from book/manuscripts/book.json -->
+<!-- このファイルは直接編集せずに、book.json を編集してください -->
+
 # {{BOOK_TITLE}}
 
 エンジニアリングとアニメ（あるいはアニメ文化）をテーマにした技術同人誌「{{BOOK_TITLE}}」を制作するためのテンプレートリポジトリです。
@@ -7,7 +10,7 @@
 
 本テンプレートからリポジトリを作成した後、以下のファイルを開き、プロジェクトの情報（書籍名、イベント日、著者情報など）を書き換えてください。
 
-- **[scripts/data.json](./scripts/data.json)**
+- **[book/manuscripts/book.json](./book/manuscripts/book.json)**
 
 編集後、以下のコマンドを実行すると、すべての関連ファイル（README、設定、目次、奥付など）に情報が同期されます。
 
@@ -73,7 +76,7 @@ make pdf_press
 ## 原稿の追加方法
 
 - `book/manuscripts` ディレクトリに `.md` ファイルを作成します。
-- **[scripts/data.json](./scripts/data.json)** に記事のタイトルとファイル名を追記してください。自動的に目次やPDFの構成に反映されます。
+- **[book/manuscripts/book.json](./book/manuscripts/book.json)** に記事のタイトルとファイル名を追記してください。自動的に目次やPDFの構成に反映されます。
 
 ## 文章校正 (textlint)
 
@@ -88,4 +91,4 @@ make lint
 
 ### 注意事項
 
-- 本リポジトリの MIT ライセンスには、エンジニアニメに関する紹介文や固有のコンテンツは含まれません。
+- 本リポジトリの MIT ライセンスには、{{BOOK_AUTHOR}}に関する紹介文や固有のコンテンツは含まれません。

@@ -3,21 +3,40 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataPath = path.resolve(__dirname, 'data.json');
+const dataPath = path.resolve(__dirname, '../book/manuscripts/book.json');
+const statePath = path.resolve(__dirname, '../.sync-state.json');
 const rootDir = path.resolve(__dirname, '..');
+
+const WARNING_COMMENT = `<!-- Generated from book/manuscripts/book.json -->
+<!-- このファイルは直接編集せずに、book.json を編集してください -->`;
+
+const WARNING_COMMENT_JS = `// Generated from book/manuscripts/book.json
+// このファイルは直接編集せずに、book.json を編集してください`;
 
 async function syncAll() {
   const data = JSON.parse(await fs.readFile(dataPath, 'utf8'));
+  
+  let prevState = {};
+  try {
+    prevState = JSON.parse(await fs.readFile(statePath, 'utf8'));
+  } catch (e) {}
 
-  // 1. 各ファイルで使用する置換用タグマップを作成
-  const repoPath = new URL(data.repositoryUrl).pathname.slice(1);
-  const tags = {
+  console.log('✔ Syncing with book.json...');
+
+  let repoPath = '';
+  try {
+    if (data.repositoryUrl && !data.repositoryUrl.includes('{{')) {
+      repoPath = new URL(data.repositoryUrl).pathname.slice(1);
+    }
+  } catch (e) {}
+
+  const currentTags = {
     BOOK_TITLE: data.bookTitle,
     BOOK_AUTHOR: data.bookAuthor,
     BOOK_COVER: data.bookCover,
     REPOSITORY_URL: data.repositoryUrl,
-    REPOSITORY_NAME: repoPath.split('/').pop(),
-    REPOSITORY_GIT_URL: `git@github.com:${repoPath}.git`,
+    REPOSITORY_NAME: repoPath ? repoPath.split('/').pop() : '{{REPOSITORY_NAME}}',
+    REPOSITORY_GIT_URL: repoPath ? `git@github.com:${repoPath}.git` : '{{REPOSITORY_GIT_URL}}',
     EVENT_NAME: data.event.name,
     EVENT_URL: data.event.url,
     EVENT_DATE: data.event.date,
@@ -29,70 +48,94 @@ async function syncAll() {
     PRINTER_URL: data.printer.url,
   };
 
-  // 2. グローバルな置換処理（タグ形式の置換）
   const targetFiles = [
-    'README.md',
-    'package.json',
-    'book/vivliostyle.config.js',
-    'book/manuscripts/index.md',
-    'book/manuscripts/colophon.md',
+    { path: 'README.md', type: 'md' },
+    { path: 'package.json', type: 'json' },
+    { path: 'book/vivliostyle.config.js', type: 'js' },
+    { path: 'book/manuscripts/index.md', type: 'md' },
+    { path: 'book/manuscripts/colophon.md', type: 'md' },
   ];
 
-  for (const relPath of targetFiles) {
-    const filePath = path.join(rootDir, relPath);
+  for (const target of targetFiles) {
+    const filePath = path.join(rootDir, target.path);
     try {
       let content = await fs.readFile(filePath, 'utf8');
       let updated = false;
-      for (const [tag, value] of Object.entries(tags)) {
+
+      for (const [tag, newValue] of Object.entries(currentTags)) {
         const placeholder = `{{${tag}}}`;
-        if (content.includes(placeholder)) {
-          content = content.split(placeholder).join(value);
+        const oldValue = prevState[tag];
+
+        // 1. タグ形式 {{TAG}} があれば置換
+        if (content.includes(placeholder) && placeholder !== newValue) {
+          content = content.split(placeholder).join(newValue);
+          updated = true;
+        } 
+        // 2. 前回の値(oldValue)がファイル内にあり、かつ新しい値と異なるなら置換
+        else if (oldValue && oldValue !== newValue && content.includes(oldValue)) {
+          content = content.split(oldValue).join(newValue);
           updated = true;
         }
+        // 3. 特殊対応: book.json がタグに戻っているのにファイルが古い値のままの場合
+        // (stateファイルが初期化されてしまった時などの救済)
+        else if (newValue === placeholder) {
+            // ファイル内にタグがなく、かつ「エンジニアニメ Book」のような実体がある場合は
+            // 全ての既知のプロパティ値に対して置換を試みるのは危険なので、
+            // 現在の README 等を解析して置換するのは難しい。
+            // しかし、BOOK_TITLE 等の主要な項目については、特定の値を指定して戻すことができる。
+        }
       }
+
+      if (target.type === 'md' && !content.includes(WARNING_COMMENT)) {
+        content = WARNING_COMMENT + '\n\n' + content;
+        updated = true;
+      } else if (target.type === 'js' && !content.includes(WARNING_COMMENT_JS)) {
+        content = WARNING_COMMENT_JS + '\n\n' + content;
+        updated = true;
+      }
+
       if (updated) await fs.writeFile(filePath, content, 'utf8');
     } catch (e) {}
   }
 
-  // 3. 各原稿（Manuscripts）の同期
+  // Manuscripts 同期
   for (const author of data.authors) {
     for (const article of author.articles) {
       const filePath = path.join(rootDir, 'book/manuscripts', article.file);
       try {
         let content = await fs.readFile(filePath, 'utf8');
         let updated = false;
-        
-        // H1置換
         const h1Regex = /^#\s+.+$/m;
         if (h1Regex.test(content)) { content = content.replace(h1Regex, `# ${article.title}`); updated = true; }
-        
-        // フロントマター置換
         const titleDiv = /<div class="doc-title">[\s\S]*?<\/div>/;
         const authorDiv = /<div class="doc-author">[\s\S]*?<\/div>/;
         if (titleDiv.test(content)) { content = content.replace(titleDiv, `<div class="doc-title">${article.title}</div>`); updated = true; }
         if (authorDiv.test(content)) { content = content.replace(authorDiv, `<div class="doc-author">${author.name}</div>`); updated = true; }
-        
         if (updated) await fs.writeFile(filePath, content, 'utf8');
       } catch (e) {}
     }
   }
 
-  // 4. 目次 (TOC) の生成
+  // TOC / Authors 生成
   const indexPath = path.join(rootDir, 'book/manuscripts/index.md');
-  const indexContent = await fs.readFile(indexPath, 'utf8');
-  const tocItems = [`1. [はじめに](preface.html)`];
-  for (const author of data.authors) {
-    for (const article of author.articles) {
-      tocItems.push(`1. [${article.title}](${article.file.replace('.md', '.html')})`);
+  const tocItems = [];
+  const addToToc = (items) => {
+    if (!items) return;
+    for (const item of items) {
+      if (item.showInToc === false) continue;
+      tocItems.push(`1. [${item.title}](${item.file.replace('.md', '.html')})`);
     }
-  }
-  tocItems.push(`1. [著者紹介](authors.html)`);
+  };
+  addToToc(data.frontmatter);
+  for (const author of data.authors) addToToc(author.articles);
+  addToToc(data.backmatter);
   
-  const frontmatter = (indexContent.match(/^---[\s\S]+?---/) || [''])[0];
-  const newIndex = `${frontmatter}\n\n# ${data.bookTitle}\n\n<nav id="toc" role="doc-toc">\n\n## 目次\n\n${tocItems.join('\n')}\n\n</nav>\n`;
+  const indexContent = await fs.readFile(indexPath, 'utf8');
+  const frontmatterMatch = indexContent.match(/^---[\s\S]+?---/);
+  const frontmatter = frontmatterMatch ? frontmatterMatch[0] : '';
+  const newIndex = `${WARNING_COMMENT}\n${frontmatter}\n\n# ${data.bookTitle}\n\n<nav id="toc" role="doc-toc">\n\n## 目次\n\n${tocItems.join('\n')}\n\n</nav>\n`;
   await fs.writeFile(indexPath, newIndex.trim() + '\n', 'utf8');
 
-  // 5. 著者紹介ページの生成
   const authorsPath = path.join(rootDir, 'book/manuscripts/authors.md');
   const authorCards = data.authors.map(author => `
 <div class="author_container">
@@ -106,17 +149,15 @@ async function syncAll() {
         </div>
     </div>
 </div>`).join('\n');
-  const authorsContent = `---
+  await fs.writeFile(authorsPath, `${WARNING_COMMENT}\n---
 class: content
 ---
 <div class="doc-header"><h1>著者紹介</h1></div>
-# 著者紹介
-<!-- Generated from scripts/data.json -->
 ${authorCards}
-`;
-  await fs.writeFile(authorsPath, authorsContent);
+`);
 
-  console.log('✔ All files synced with data.json');
+  await fs.writeFile(statePath, JSON.stringify(currentTags, null, 2), 'utf8');
+  console.log('✔ All files synced with book.json');
 }
 
 syncAll().catch(console.error);

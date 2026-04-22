@@ -16,7 +16,7 @@
 2. GitHub上にIssueを作成し、考えているタイトルやページ数などを表明する
 3. 自分の作業用ブランチを作成する
 4. 記事を作成する
-5. **[scripts/data.json](../scripts/data.json)** に記事情報と著者情報を登録する
+5. **[book/manuscripts/book.json](../book/manuscripts/book.json)** に記事情報と著者情報を登録する
 6. リモートリポジトリにPushする
 7. 作業ブランチから `main` ブランチに対してPull Requestを作成する
 8. `main` ブランチにマージする
@@ -38,7 +38,7 @@
 例: `kanata_no_astra_ohkura.md`
 
 ### 4. 記事情報と著者情報を登録する Master
-`scripts/data.json` に自分と記事の情報を追加してください。ここに登録された情報をもとに、目次、PDFの構成（章の順番）、著者紹介ページ、および各原稿内のタイトル・著者名が自動生成・同期されます。
+`book/manuscripts/book.json` に自分と記事の情報を追加してください。ここに登録された情報をもとに、目次、PDFの構成（章の順番）、著者紹介ページ、および各原稿内のタイトル・著者名が自動生成・同期されます。
 
 ```json
 {

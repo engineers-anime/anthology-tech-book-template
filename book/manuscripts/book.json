@@ -1,0 +1,43 @@
+{
+  "bookTitle": "{{BOOK_TITLE}}",
+  "bookAuthor": "{{BOOK_AUTHOR}}",
+  "bookCover": "{{BOOK_COVER}}",
+  "repositoryUrl": "{{REPOSITORY_URL}}",
+  "event": {
+    "name": "{{EVENT_NAME}}",
+    "url": "{{EVENT_URL}}",
+    "date": "{{EVENT_DATE}}"
+  },
+  "deadlines": {
+    "manuscript": "{{DUE_DATE_MANUSCRIPT}}",
+    "pageConfirm": "{{DUE_DATE_PAGE_CONFIRM}}",
+    "cover": "{{DUE_DATE_COVER}}",
+    "submission": "{{DUE_DATE_SUBMISSION}}"
+  },
+  "printer": {
+    "name": "{{PRINTER_NAME}}",
+    "url": "{{PRINTER_URL}}"
+  },
+  "frontmatter": [
+    { "title": "はじめに", "file": "preface.md" }
+  ],
+  "authors": [
+    {
+      "name": "sample 太郎",
+      "icon": "https://github.com/github.png",
+      "x": "@sample",
+      "job": "エンジニア",
+      "favorites": ["彼方のアストラ", "SHIROBAKO"],
+      "articles": [
+        {
+          "title": "サンプル記事のタイトル",
+          "file": "sample_chapter.md"
+        }
+      ]
+    }
+  ],
+  "backmatter": [
+    { "title": "著者紹介", "file": "authors.md" },
+    { "title": "奥付", "file": "colophon.md", "showInToc": false }
+  ]
+}

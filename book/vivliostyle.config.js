@@ -1,18 +1,20 @@
+// Generated from book/manuscripts/book.json
+// このファイルは直接編集せずに、book.json を編集してください
+
 const fs = require('fs');
 const path = require('path');
 
-// data.json から記事のファイル一覧を取得する
-const dataPath = path.resolve(__dirname, '../scripts/data.json');
+// book.json から記事のファイル一覧を取得する
+const dataPath = path.resolve(__dirname, './manuscripts/book.json');
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
-// すべての著者の記事ファイルを抽出
-const chapterFiles = data.authors.flatMap(author => 
-  author.articles.map(article => article.file)
-);
-
-// 固定ファイル
-const topFiles = ['index.md', 'preface.md'];
-const bottomFiles = ['authors.md', 'colophon.md'];
+// 全ファイルのリストを作成
+const entry = [
+  'index.md',
+  ...data.frontmatter.map(item => item.file),
+  ...data.authors.flatMap(author => author.articles.map(article => article.file)),
+  ...data.backmatter.map(item => item.file),
+];
 
 module.exports = {
   title: data.bookTitle,
@@ -24,11 +26,7 @@ module.exports = {
     '@mitsuharu/vivliostyle-theme-noto-sans-jp@0.1.4',
     path.join(__dirname, 'theme/theme-custom'),
   ],
-  entry: [
-    ...topFiles,
-    ...chapterFiles,
-    ...bottomFiles,
-  ],
+  entry: entry,
   entryContext: path.join(__dirname, './manuscripts'),
   output: [path.join(__dirname, './output/ebook.pdf')],
   workspaceDir: path.join(__dirname, '../.vivliostyle'),

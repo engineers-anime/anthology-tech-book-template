@@ -4,7 +4,7 @@ class: content
 
 <div class="doc-header">
   <div class="doc-title">サンプル記事のタイトル</div>
-  <div class="doc-author">サンプル太郎</div>
+  <div class="doc-author">sample 太郎</div>
 </div>
 
 # サンプル記事のタイトル
