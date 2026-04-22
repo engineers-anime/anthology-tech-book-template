@@ -2,10 +2,13 @@
 class: content
 ---
 
+<!-- Generated from book/manuscripts/book.json -->
+<!-- このセクションは直接編集せずに、book.json を編集してください -->
 <div class="doc-header">
   <div class="doc-title">サンプル記事のタイトル</div>
   <div class="doc-author">sample 太郎</div>
 </div>
+<!-- Generated from book/manuscripts/book.json -->
 
 # サンプル記事のタイトル
 
