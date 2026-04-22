@@ -3,11 +3,11 @@ class: content
 ---
 
 <div class="doc-header">
-  <div class="doc-title">サンプルチャプターのタイトル</div>
-  <div class="doc-author">サンプルチャプターの著者</div>
+  <div class="doc-title">サンプル記事のタイトル</div>
+  <div class="doc-author">サンプル太郎</div>
 </div>
 
-# サンプルチャプターのタイトル
+# サンプル記事のタイトル
 
 次の文章は、でたらめ文章ジェネレーター [^BullshitGenerator-Japanese] で生成した、検証用の文章です（内容に意味はないです）。textlint の警告が出ていますが、`textlint-disable` で無視しています。
 

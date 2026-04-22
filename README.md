@@ -5,12 +5,17 @@
 
 ## 初期セットアップ
 
-本テンプレートからリポジトリを作成した後、以下のコマンドを実行して書籍名やイベント情報を設定してください。
-（Yarnの整合性チェックを避けるため、直接Node.jsで実行します）
+本テンプレートからリポジトリを作成した後、以下のファイルを開き、プロジェクトの情報（書籍名、イベント日、著者情報など）を書き換えてください。
+
+- **[scripts/data.json](./scripts/data.json)**
+
+編集後、以下のコマンドを実行すると、すべての関連ファイル（README、設定、目次、奥付など）に情報が同期されます。
 
 ```shell
-node scripts/setup.mjs
+node scripts/sync-all.mjs
 ```
+
+※ビルドコマンド（`yarn start` 等）を実行した際にも自動的に同期されます。
 
 ## スケジュール
 
@@ -68,7 +73,7 @@ make pdf_press
 ## 原稿の追加方法
 
 - `book/manuscripts` ディレクトリに `.md` ファイルを作成します。
-- `book/vivliostyle.config.js` の `entry` 配列にファイル名を追加します。
+- **[scripts/data.json](./scripts/data.json)** に記事のタイトルとファイル名を追記してください。自動的に目次やPDFの構成に反映されます。
 
 ## 文章校正 (textlint)
 
