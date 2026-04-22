@@ -40,7 +40,6 @@ npm-debug.log
 yarn-error.log
 
 # Sync state
-.sync-state.json
 .setup-state.json
 
 

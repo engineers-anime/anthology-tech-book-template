@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataPath = path.resolve(__dirname, '../book/manuscripts/book.json');
-const statePath = path.resolve(__dirname, '../.sync-state.json');
 const rootDir = path.resolve(__dirname, '..');
 
 const WARNING_COMMENT = `<!-- Generated from book/manuscripts/book.json -->
@@ -16,10 +15,7 @@ const WARNING_COMMENT_JS = `// Generated from book/manuscripts/book.json
 async function syncAll() {
   const data = JSON.parse(await fs.readFile(dataPath, 'utf8'));
   
-  let prevState = {};
-  try {
-    prevState = JSON.parse(await fs.readFile(statePath, 'utf8'));
-  } catch (e) {}
+  const prevState = data._state || {};
 
   console.log('✔ Syncing with book.json...');
 
@@ -156,7 +152,8 @@ class: content
 ${authorCards}
 `);
 
-  await fs.writeFile(statePath, JSON.stringify(currentTags, null, 2), 'utf8');
+  data._state = currentTags;
+  await fs.writeFile(dataPath, JSON.stringify(data, null, 2), 'utf8');
   console.log('✔ All files synced with book.json');
 }
 
