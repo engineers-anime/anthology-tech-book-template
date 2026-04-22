@@ -4,18 +4,22 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataPath = path.resolve(__dirname, '../book/manuscripts/book.json');
+const statePath = path.resolve(__dirname, '../.sync-state.json');
 const rootDir = path.resolve(__dirname, '..');
 
 const WARNING_COMMENT = `<!-- Generated from book/manuscripts/book.json -->
-<!-- このファイルは直接編集せずに、book.json を編集してください -->`;
+<!-- ここより下は直接編集せずに、book.json を編集してください -->`;
 
 const WARNING_COMMENT_JS = `// Generated from book/manuscripts/book.json
-// このファイルは直接編集せずに、book.json を編集してください`;
+// ここより下は直接編集せずに、book.json を編集してください`;
 
 async function syncAll() {
   const data = JSON.parse(await fs.readFile(dataPath, 'utf8'));
   
-  const prevState = data._state || {};
+  let prevState = {};
+  try {
+    prevState = JSON.parse(await fs.readFile(statePath, 'utf8'));
+  } catch (e) {}
 
   console.log('✔ Syncing with book.json...');
 
@@ -71,14 +75,6 @@ async function syncAll() {
         else if (oldValue && oldValue !== newValue && content.includes(oldValue)) {
           content = content.split(oldValue).join(newValue);
           updated = true;
-        }
-        // 3. 特殊対応: book.json がタグに戻っているのにファイルが古い値のままの場合
-        // (stateファイルが初期化されてしまった時などの救済)
-        else if (newValue === placeholder) {
-            // ファイル内にタグがなく、かつ「エンジニアニメ Book」のような実体がある場合は
-            // 全ての既知のプロパティ値に対して置換を試みるのは危険なので、
-            // 現在の README 等を解析して置換するのは難しい。
-            // しかし、BOOK_TITLE 等の主要な項目については、特定の値を指定して戻すことができる。
         }
       }
 
@@ -145,15 +141,15 @@ async function syncAll() {
         </div>
     </div>
 </div>`).join('\n');
-  await fs.writeFile(authorsPath, `${WARNING_COMMENT}\n---
+  await fs.writeFile(authorsPath, `---
 class: content
 ---
+${WARNING_COMMENT}
 <div class="doc-header"><h1>著者紹介</h1></div>
 ${authorCards}
 `);
 
-  data._state = currentTags;
-  await fs.writeFile(dataPath, JSON.stringify(data, null, 2), 'utf8');
+  await fs.writeFile(statePath, JSON.stringify(currentTags, null, 2), 'utf8');
   console.log('✔ All files synced with book.json');
 }
 

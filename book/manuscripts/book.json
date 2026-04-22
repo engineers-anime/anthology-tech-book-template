@@ -48,26 +48,8 @@
       "file": "authors.md"
     },
     {
-      "title": "奥付",
-      "file": "colophon.md",
-      "showInToc": false
+      "title": "あとがき",
+      "file": "colophon.md"
     }
-  ],
-  "_state": {
-    "BOOK_TITLE": "{{BOOK_TITLE}}",
-    "BOOK_AUTHOR": "{{BOOK_AUTHOR}}",
-    "BOOK_COVER": "{{BOOK_COVER}}",
-    "REPOSITORY_URL": "{{REPOSITORY_URL}}",
-    "REPOSITORY_NAME": "{{REPOSITORY_NAME}}",
-    "REPOSITORY_GIT_URL": "{{REPOSITORY_GIT_URL}}",
-    "EVENT_NAME": "{{EVENT_NAME}}",
-    "EVENT_URL": "{{EVENT_URL}}",
-    "EVENT_DATE": "{{EVENT_DATE}}",
-    "DUE_DATE_MANUSCRIPT": "{{DUE_DATE_MANUSCRIPT}}",
-    "DUE_DATE_PAGE_CONFIRM": "{{DUE_DATE_PAGE_CONFIRM}}",
-    "DUE_DATE_COVER": "{{DUE_DATE_COVER}}",
-    "DUE_DATE_SUBMISSION": "{{DUE_DATE_SUBMISSION}}",
-    "PRINTER_NAME": "{{PRINTER_NAME}}",
-    "PRINTER_URL": "{{PRINTER_URL}}"
-  }
+  ]
 }

@@ -1,5 +1,5 @@
 // Generated from book/manuscripts/book.json
-// このファイルは直接編集せずに、book.json を編集してください
+// ここより下は直接編集せずに、book.json を編集してください
 
 const fs = require('fs');
 const path = require('path');

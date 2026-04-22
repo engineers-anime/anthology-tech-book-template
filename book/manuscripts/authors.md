@@ -1,8 +1,8 @@
-<!-- Generated from book/manuscripts/book.json -->
-<!-- このファイルは直接編集せずに、book.json を編集してください -->
 ---
 class: content
 ---
+<!-- Generated from book/manuscripts/book.json -->
+<!-- ここより下は直接編集せずに、book.json を編集してください -->
 <div class="doc-header"><h1>著者紹介</h1></div>
 
 <div class="author_container">

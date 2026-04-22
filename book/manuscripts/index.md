@@ -1,5 +1,5 @@
 <!-- Generated from book/manuscripts/book.json -->
-<!-- このファイルは直接編集せずに、book.json を編集してください -->
+<!-- ここより下は直接編集せずに、book.json を編集してください -->
 
 
 # {{BOOK_TITLE}}
@@ -11,5 +11,6 @@
 1. [はじめに](preface.html)
 1. [サンプル記事のタイトル](sample_chapter.html)
 1. [著者紹介](authors.html)
+1. [あとがき](colophon.html)
 
 </nav>
