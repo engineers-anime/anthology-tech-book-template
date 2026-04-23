@@ -1,0 +1,29 @@
+name: Notify Discord
+
+on:
+  issues:
+    types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: >
+      (github.event.issue && contains(github.event.issue.labels.*.name, 'chapter_proposal')) ||
+      (github.event.issue && contains(github.event.issue.labels.*.name, 'article_feedback'))
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_MENTION_ID_ORGANIZER: ${{ secrets.DISCORD_MENTION_ID_ORGANIZER }}
+        run: |
+          node scripts/notify-discord.mjs
