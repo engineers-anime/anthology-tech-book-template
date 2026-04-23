@@ -41,5 +41,6 @@ jobs:
           git add docs/proposal_status.md
           if ! git diff --cached --exit-code; then
             git commit -m "docs: update proposal status [skip ci]"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi

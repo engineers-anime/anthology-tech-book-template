@@ -43,5 +43,6 @@ jobs:
           git add docs/review_status.md
           if ! git diff --cached --exit-code; then
             git commit -m "docs: update review status [skip ci]"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
