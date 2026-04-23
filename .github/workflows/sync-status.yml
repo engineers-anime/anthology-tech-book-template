@@ -1,4 +1,4 @@
-name: Sync Status (Proposals and Reviews)
+name: Sync Proposals and Reviews Status
 
 on:
   issues:
@@ -14,7 +14,8 @@ permissions:
   contents: write
 
 jobs:
-  sync:
+  update-proposals-and-reviews-status:
+    name: Update Proposals and Reviews Status
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
