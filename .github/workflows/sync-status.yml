@@ -1,0 +1,63 @@
+name: Sync Proposals and Reviews Status
+
+on:
+  issues:
+    types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-proposals-and-reviews-status:
+    name: Update Proposals and Reviews Status
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 全履歴を取得して衝突回避をしやすくする
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Sync Proposals and Reviews
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 両方の同期スクリプトを順番に実行
+          yarn sync:proposals
+          yarn sync:reviews
+
+      - name: Commit and Push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # 両方のファイルをステージング
+          git add docs/proposal_status.md docs/review_status.md
+          
+          if ! git diff --cached --exit-code; then
+            git commit -m "docs: update status (proposals and reviews) [skip ci]"
+            
+            # 最大5回リトライするループ（万が一他のActionsと重なっても大丈夫なように）
+            for i in {1..5}; do
+              git pull --rebase origin main && git push origin main && break || {
+                echo "Push failed, retrying in $((i*2))s..."
+                sleep $((i*2))
+                git checkout . # 他の変更を掃除
+              }
+            done
+          fi
