@@ -6,15 +6,12 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'book/manuscripts/book.json'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  check-proposals:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repository

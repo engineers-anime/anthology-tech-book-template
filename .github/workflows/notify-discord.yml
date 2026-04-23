@@ -5,6 +5,9 @@ on:
     types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
   issue_comment:
     types: [created, edited, deleted]
+  push:
+    branches:
+      - main
 
 jobs:
   notify:

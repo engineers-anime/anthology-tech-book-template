@@ -5,13 +5,13 @@ on:
     types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
   issue_comment:
     types: [created, edited, deleted]
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
-jobs:
-  update-status:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # コミットとプッシュに必要
+permissions:
+  contents: write
 
     steps:
       - name: Checkout repository
