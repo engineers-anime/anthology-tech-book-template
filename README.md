@@ -59,9 +59,9 @@ make run
 
 🔖 [グローバル環境を可能な限り汚染せずに Markdown から組版の PDF を生成](https://zenn.dev/yumemi_inc/articles/afe7745cd62af2)
 
-### 電子版 PDF に表紙画像を追加する
+### 電子版 PDF に表紙・裏表紙画像を追加する
 
-表紙画像を `book/cover/cover.png` に保存している場合、次のコマンドで表紙結合済み PDF（`output/ebook_covered.pdf`）を生成できます。
+表紙画像（`book/cover/cover.png`）と裏表紙画像（`book/cover/back_cover.png`）を配置している場合、次のコマンドで表紙・裏表紙を結合した PDF（`book/output/ebook.pdf`）を生成（上書き）できます。
 
 ```shell
 make cover

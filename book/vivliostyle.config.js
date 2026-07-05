@@ -8,13 +8,13 @@ const path = require('path');
 const dataPath = path.resolve(__dirname, './manuscripts/book.json');
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
-// 全ファイルのリストを作成
-const entry = [
+// 全ファイルのリストを作成（重複を除外してVivliostyleのビルドエラーを防ぎます）
+const entry = [...new Set([
   'index.md',
   ...data.frontmatter.map(item => item.file),
   ...data.authors.flatMap(author => author.articles.map(article => article.file)),
   ...data.backmatter.map(item => item.file),
-];
+])];
 
 module.exports = {
   title: data.bookTitle,

@@ -16,3 +16,15 @@ class: content
         </div>
     </div>
 </div>
+
+<div class="author_container">
+    <div class="author_icon_container"><img class="author_icon" src="images_authors/sample.png" alt="sample 花子"></div>
+    <div class="author_info_container">
+        <div class="author_name"><b>sample 花子</b>（X: @sample）</div>
+        <div class="author-info-block">
+            <div>執筆: サンプル記事のタイトル</div>
+            <div class="author_job">お仕事: エンジニア</div>
+            <div class="author_favolite_anime">好きなアニメ: 彼方のアストラ/SHIROBAKO</div>
+        </div>
+    </div>
+</div>

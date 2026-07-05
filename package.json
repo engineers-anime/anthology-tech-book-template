@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "textlint ./book/manuscripts/",
     "sync": "node scripts/sync-all.mjs",
-    "start": "run-s sync build:pdf open",
+    "start": "run-s sync build:pdf cover open",
     "build": "run-s sync build:pdf",
     "build:pdf": "vivliostyle build book/vivliostyle.config.js",
     "build:press": "run-s sync build:press-pdf",

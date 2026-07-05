@@ -42,6 +42,24 @@
           "file": "sample_chapter.md"
         }
       ]
+    },
+    {
+      "name": "sample 花子",
+      "icon": "sample.png",
+      "x": "@sample",
+      "discord": "sample",
+      "github": "octocat",
+      "job": "エンジニア",
+      "favorites": [
+        "彼方のアストラ",
+        "SHIROBAKO"
+      ],
+      "articles": [
+        {
+          "title": "サンプル記事のタイトル",
+          "file": "sample_chapter.md"
+        }
+      ]
     }
   ],
   "backmatter": [

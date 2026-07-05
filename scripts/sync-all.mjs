@@ -123,9 +123,35 @@ async function syncAll() {
   addToToc(data.backmatter);
   
   const indexContent = await fs.readFile(indexPath, 'utf8');
-  const frontmatterMatch = indexContent.match(/^---[\s\S]+?---/);
-  const frontmatter = frontmatterMatch ? frontmatterMatch[0] : '';
-  const newIndex = `${WARNING_COMMENT}\n${frontmatter}\n\n# ${data.bookTitle}\n\n<nav id="toc" role="doc-toc">\n\n## 目次\n\n${tocItems.join('\n')}\n\n</nav>\n`;
+  
+  const authorNames = data.authors.map(author => author.name).join('、');
+  const publisher = data.bookAuthor ? `${data.bookAuthor} 発行` : '';
+
+  const titlePage = `<div class="exclude-hashira">
+  <div align="center">
+      <h1>${data.bookTitle}</h1>
+  </div>
+
+  <!-- textlint-disable ja-technical-writing/ja-no-mixed-period -->
+  <!-- textlint-disable ja-technical-writing/max-comma -->
+  <!-- textlint-disable ja-technical-writing/ja-no-weak-phrase -->
+  <div style="text-align: center; position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); width: 100%;">
+    <h2 style="font-weight: 400;">
+    ${authorNames}　著
+    </h2>
+  </div>
+  <!-- textlint-disable ja-technical-writing/ja-no-weak-phrase -->
+  <!-- textlint-disable ja-technical-writing/max-comma -->
+  <!-- textlint-disable ja-technical-writing/ja-no-mixed-period -->
+
+  <!-- textlint-disable ja-spacing/ja-no-space-between-full-width -->
+  <div style="position: absolute; bottom: 0; width: 100%; text-align: center;">
+    <h3 style="font-weight: 400;">${publisher}</h3>
+  </div>
+  <!-- textlint-disable ja-spacing/ja-no-space-between-full-width -->
+</div>`;
+
+  const newIndex = `---\nclass: exclude-hashira\n---\n${WARNING_COMMENT}\n\n${titlePage}\n\n<nav id="toc" role="doc-toc">\n\n## 目次\n\n${tocItems.join('\n')}\n\n</nav>\n`;
   await fs.writeFile(indexPath, newIndex.trim() + '\n', 'utf8');
 
   const authorsPath = path.join(rootDir, 'book/manuscripts/authors.md');

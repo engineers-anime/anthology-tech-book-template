@@ -16,7 +16,6 @@ jobs:
     env:
       # 生成される PDF のパス
       EBOOK_PDF_PATH: ./book/output/ebook.pdf
-      EBOOK_COVERED_PDF_PATH: ./book/output/ebook_covered.pdf
       PRESS_PDF_PATH: ./book/output/press.pdf
       COVER_PNG_PATH: ./book/cover/cover.png
       COVER_PSD_PATH: ./book/cover/*.psd
