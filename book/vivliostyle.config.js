@@ -8,13 +8,13 @@ const path = require('path');
 const dataPath = path.resolve(__dirname, './manuscripts/book.json');
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
-// 全ファイルのリストを作成
-const entry = [
+// 全ファイルのリストを作成（重複を除外してVivliostyleのビルドエラーを防ぎます）
+const entry = [...new Set([
   'index.md',
   ...data.frontmatter.map(item => item.file),
   ...data.authors.flatMap(author => author.articles.map(article => article.file)),
   ...data.backmatter.map(item => item.file),
-];
+])];
 
 module.exports = {
   title: data.bookTitle,
@@ -23,7 +23,7 @@ module.exports = {
   size: 'A5',
   theme: [
     'vivliostyle-theme-macneko-techbook@0.5.0',
-    '@mitsuharu/vivliostyle-theme-noto-sans-jp@0.1.4',
+    '@mitsuharu/vivliostyle-theme-noto-sans-jp@0.2.0',
     path.join(__dirname, 'theme/theme-custom'),
   ],
   entry: entry,
