@@ -97,6 +97,12 @@ yarn verify:pdf path/to/ebook.pdf
 
 GitHub Actions でも PR の PDF 添付、リリース、ページ数通知の前に電子版 PDF を検査します。印刷入稿用 PDF は入稿処理で文字がアウトライン化される場合があるため、CI では生成結果の存在を確認します。
 
+### PR 確認用 PDF の保存と整理
+
+PR で生成した `ebook.pdf` は7日間保存されます。以前にアップロードした PDF を整理する場合は、GitHub Actions の「Clean up ebook PDF artifacts」を手動で実行します。
+
+既定では削除候補を実行結果のサマリーに表示します。削除する場合は、基準日時を日本時間の `YYYY-MM-DD HH:MM` 形式で入力し、`delete_artifacts` を有効にします。基準日時より前に作成された `ebook.pdf` が対象です。
+
 ---
 
 ## よくある質問（Q&A）
