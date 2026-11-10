@@ -1,6 +1,7 @@
 {
   "bookTitle": "{{BOOK_TITLE}}",
   "bookAuthor": "{{BOOK_AUTHOR}}",
+  "pdfFontPrefix": "NotoSansJP-",
   "bookCover": "{{BOOK_COVER}}",
   "repositoryUrl": "{{REPOSITORY_URL}}",
   "event": {

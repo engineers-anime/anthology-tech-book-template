@@ -23,7 +23,7 @@ module.exports = {
   size: 'A5',
   theme: [
     'vivliostyle-theme-macneko-techbook@0.5.0',
-    '@mitsuharu/vivliostyle-theme-noto-sans-jp@0.1.4',
+    '@mitsuharu/vivliostyle-theme-noto-sans-jp@0.2.0',
     path.join(__dirname, 'theme/theme-custom'),
   ],
   entry: entry,

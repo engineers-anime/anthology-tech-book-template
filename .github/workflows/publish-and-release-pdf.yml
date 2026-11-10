@@ -61,6 +61,12 @@ jobs:
             exit 1
           fi
           
+      - name: Verify ebook title and embedded fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          yarn verify:pdf "${EBOOK_PDF_PATH}"
+
       # リリースの作成
       - name: Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0

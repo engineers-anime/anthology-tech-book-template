@@ -84,6 +84,19 @@ yarn install
 yarn start
 ```
 
+### PDF の書籍タイトルとフォントを検査する
+
+Poppler をインストールすると、PDF から書籍タイトルを抽出できることと、指定したフォントが埋め込まれていることを確認できます。macOS では `brew install poppler`、Ubuntu では `sudo apt-get install poppler-utils` でインストールできます。
+
+```shell
+yarn verify:pdf
+yarn verify:pdf path/to/ebook.pdf
+```
+
+フォントを差し替えた場合は、`pdffonts` に表示されるフォント名の共通の接頭辞を `book/manuscripts/book.json` の `pdfFontPrefix` に指定します。先頭のサブセット識別子（例 `ABCDEF+`）は除いてください。既定値は `NotoSansJP-` です。
+
+GitHub Actions でも PR の PDF 添付、リリース、ページ数通知の前に電子版 PDF を検査します。印刷入稿用 PDF は入稿処理で文字がアウトライン化される場合があるため、CI では生成結果の存在を確認します。
+
 ---
 
 ## よくある質問（Q&A）

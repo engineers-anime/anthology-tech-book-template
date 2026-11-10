@@ -52,6 +52,7 @@ jobs:
         id: pagecount
         run: |
           set -euo pipefail
+          yarn verify:pdf "$EBOOK_PDF_PATH"
           EBOOK_PAGES="$(pdfinfo "$EBOOK_PDF_PATH" | awk '/^Pages:/ {print $2}')"
           echo "電子版 PDF のページ数: ${EBOOK_PAGES}"
           echo "ebook=${EBOOK_PAGES}" >> "$GITHUB_OUTPUT"

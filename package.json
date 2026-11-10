@@ -11,6 +11,7 @@
     "start": "run-s sync build:pdf cover open",
     "build": "run-s sync build:pdf",
     "build:pdf": "vivliostyle build book/vivliostyle.config.js",
+    "verify:pdf": "node scripts/verify-pdf.mjs",
     "build:press": "run-s sync build:press-pdf",
     "build:press-pdf": "vivliostyle build book/vivliostyle.config.press.local.js",
     "open": "open ./book/output/ebook.pdf",

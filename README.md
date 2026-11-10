@@ -59,6 +59,26 @@ make run
 
 🔖 [グローバル環境を可能な限り汚染せずに Markdown から組版の PDF を生成](https://zenn.dev/yumemi_inc/articles/afe7745cd62af2)
 
+### Yarn コマンド一覧
+
+`package.json` に定義されているコマンドです。リポジトリのルートで実行します。
+
+| コマンド | 内容 |
+| :--- | :--- |
+| `yarn start` | 書籍情報を同期し、電子版 PDF を生成します。表紙・裏表紙を追加する処理を実行したあと、PDF を開きます。 |
+| `yarn build` | 書籍情報を同期し、本文のみの電子版 PDF（`book/output/ebook.pdf`）を生成します。 |
+| `yarn build:pdf` | 現在の設定で本文のみの電子版 PDF を生成します。 |
+| `yarn build:press` | 書籍情報を同期し、印刷入稿用 PDF（`book/output/press.pdf`）を生成します。 |
+| `yarn build:press-pdf` | ローカルの印刷入稿用設定で、グレースケールの PDF（`book/output/press.pdf`）を生成します。 |
+| `yarn sync` | `book/manuscripts/book.json` の書籍情報を README、組版設定、目次、奥付などに反映します。 |
+| `yarn verify:pdf [PDF のパス]` | Poppler で PDF の書籍タイトルとフォントの埋め込みを検査します。パスを省略すると電子版 PDF を検査します。 |
+| `yarn cover` | 生成済みの電子版 PDF に表紙・裏表紙の PNG 画像を追加し、同じファイルに上書きします。 |
+| `yarn open` | macOS の `open` コマンドで生成済みの電子版 PDF を開きます。 |
+| `yarn clean` | `book/output/` ディレクトリとその中身を削除します。 |
+| `yarn lint` | textlint で `book/manuscripts/` の原稿を校正します。 |
+| `yarn check` | Biome で対象ファイルの書式やコードをチェックします。 |
+| `yarn check-write` | Biome でチェックし、書式の調整や安全に自動修正できる変更をファイルに書き込みます。 |
+
 ### 電子版 PDF に表紙・裏表紙画像を追加する
 
 表紙画像（`book/cover/cover.png`）と裏表紙画像（`book/cover/back_cover.png`）を配置している場合、次のコマンドで表紙・裏表紙を結合した PDF（`book/output/ebook.pdf`）を生成（上書き）できます。
@@ -68,6 +88,8 @@ make cover
 ```
 
 ### 印刷用 PDF の作成
+
+`yarn build:press` は書籍情報を同期し、`book/vivliostyle.config.press.local.js` を使って印刷入稿用 PDF を生成します。この設定では通常の組版テーマに `theme/theme-press` を追加し、`press-ready-local` でグレースケールの PDF を `book/output/press.pdf` に出力します。
 
 ```shell
 make pdf_press
