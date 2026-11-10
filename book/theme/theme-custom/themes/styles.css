@@ -43,3 +43,12 @@ blockquote + p > em:only-child {
     text-align: right;
     margin-top: -0.5em;
 }
+
+/**
+ 脚注番号が本文の上端より飛び出さないように調整するスタイル
+ */
+.footnote::footnote-call {
+  vertical-align: 0.2em;
+  font-size: 75%;
+  line-height: 1;
+}
