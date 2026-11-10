@@ -6,7 +6,7 @@ class: content
 <!-- このセクションは直接編集せずに、book.json を編集してください -->
 <div class="doc-header">
   <div class="doc-title">サンプル記事のタイトル</div>
-  <div class="doc-author">sample 太郎</div>
+  <div class="doc-author">sample 花子</div>
 </div>
 <!-- Generated from book/manuscripts/book.json -->
 

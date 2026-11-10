@@ -25,7 +25,6 @@ jobs:
     env:
       # 生成される PDF のパス
       EBOOK_PDF_PATH: ./book/output/ebook.pdf
-      EBOOK_COVERED_PDF_PATH: ./book/output/ebook_covered.pdf
       PRESS_PDF_PATH: ./book/output/press.pdf
       COVER_PNG_PATH: ./book/cover/cover.png
       COVER_PSD_PATH: ./book/cover/*.psd
@@ -55,9 +54,6 @@ jobs:
           fi
 
           yarn cover
-          if [ ! -f "${EBOOK_COVERED_PDF_PATH}" ]; then
-            echo "ワーニング: 電子版 PDF の表紙付けがされていません。"
-          fi
 
           make pdf_press
           if [ ! -f "${PRESS_PDF_PATH}" ]; then
@@ -65,6 +61,12 @@ jobs:
             exit 1
           fi
           
+      - name: Verify ebook title and embedded fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          yarn verify:pdf "${EBOOK_PDF_PATH}"
+
       # リリースの作成
       - name: Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
@@ -73,7 +75,6 @@ jobs:
           fail_on_unmatched_files: false
           files: |
             ${{ env.EBOOK_PDF_PATH }}
-            ${{ env.EBOOK_COVERED_PDF_PATH }}
             ${{ env.PRESS_PDF_PATH }}
             ${{ env.COVER_PNG_PATH }}
             ${{ env.COVER_PSD_PATH }}

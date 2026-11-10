@@ -59,15 +59,37 @@ make run
 
 🔖 [グローバル環境を可能な限り汚染せずに Markdown から組版の PDF を生成](https://zenn.dev/yumemi_inc/articles/afe7745cd62af2)
 
-### 電子版 PDF に表紙画像を追加する
+### Yarn コマンド一覧
 
-表紙画像を `book/cover/cover.png` に保存している場合、次のコマンドで表紙結合済み PDF（`output/ebook_covered.pdf`）を生成できます。
+`package.json` に定義されているコマンドです。リポジトリのルートで実行します。
+
+| コマンド | 内容 |
+| :--- | :--- |
+| `yarn start` | 書籍情報を同期し、電子版 PDF を生成します。表紙・裏表紙を追加する処理を実行したあと、PDF を開きます。 |
+| `yarn build` | 書籍情報を同期し、本文のみの電子版 PDF（`book/output/ebook.pdf`）を生成します。 |
+| `yarn build:pdf` | 現在の設定で本文のみの電子版 PDF を生成します。 |
+| `yarn build:press` | 書籍情報を同期し、印刷入稿用 PDF（`book/output/press.pdf`）を生成します。 |
+| `yarn build:press-pdf` | ローカルの印刷入稿用設定で、グレースケールの PDF（`book/output/press.pdf`）を生成します。 |
+| `yarn sync` | `book/manuscripts/book.json` の書籍情報を README、組版設定、目次、奥付などに反映します。 |
+| `yarn verify:pdf [PDF のパス]` | Poppler で PDF の書籍タイトルとフォントの埋め込みを検査します。パスを省略すると電子版 PDF を検査します。 |
+| `yarn cover` | 生成済みの電子版 PDF に表紙・裏表紙の PNG 画像を追加し、同じファイルに上書きします。 |
+| `yarn open` | macOS の `open` コマンドで生成済みの電子版 PDF を開きます。 |
+| `yarn clean` | `book/output/` ディレクトリとその中身を削除します。 |
+| `yarn lint` | textlint で `book/manuscripts/` の原稿を校正します。 |
+| `yarn check` | Biome で対象ファイルの書式やコードをチェックします。 |
+| `yarn check-write` | Biome でチェックし、書式の調整や安全に自動修正できる変更をファイルに書き込みます。 |
+
+### 電子版 PDF に表紙・裏表紙画像を追加する
+
+表紙画像（`book/cover/cover.png`）と裏表紙画像（`book/cover/back_cover.png`）を配置している場合、次のコマンドで表紙・裏表紙を結合した PDF（`book/output/ebook.pdf`）を生成（上書き）できます。
 
 ```shell
 make cover
 ```
 
 ### 印刷用 PDF の作成
+
+`yarn build:press` は書籍情報を同期し、`book/vivliostyle.config.press.local.js` を使って印刷入稿用 PDF を生成します。この設定では通常の組版テーマに `theme/theme-press` を追加し、`press-ready-local` でグレースケールの PDF を `book/output/press.pdf` に出力します。
 
 ```shell
 make pdf_press
@@ -77,13 +99,6 @@ make pdf_press
 
 GitHub Actions により、原稿が更新されるたびに PDF ページ数を計測し、Discord へ通知する機能が設定されています。
 利用するには、GitHub リポジトリの Settings > Secrets and variables > Actions に `DISCORD_WEBHOOK_URL` を登録してください。
-
-### 進捗状況の確認
-
-プロジェクトの各種進捗状況は、GitHub Actions により自動的に Discord に通知されます。
-
-- **相互レビュー進捗状況**: Issue の作成やコメントなどのアクションがあった際に、最新の進捗状況が Discord へ通知されます。
-- **執筆宣言・未登録者リスト**: 新たな執筆宣言があった際や、`book.json` が更新された際に、未登録者の一覧が Discord へ通知されます。
 
 ## 原稿の追加方法
 
