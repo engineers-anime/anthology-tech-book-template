@@ -27,7 +27,7 @@ jobs:
     steps:
       # リポジトリをチェックアウト
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       # Node.js をセットアップ
       - name: Setup Node.js
@@ -42,13 +42,12 @@ jobs:
           yarn install --immutable
           yarn build
 
-      # PDF が生成されたかどうかをチェックする
-      - name: Check if PDF exists
+      # 日本語の欠落やフォントの埋め込み漏れをアップロード前に検知する
+      - name: Verify Japanese text and embedded fonts
         run: |
-          if [ ! -f "${PDF_PATH}" ]; then
-            echo "エラー: PDF の生成に失敗しました。"
-            exit 1
-          fi
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          yarn verify:pdf "${PDF_PATH}"
 
       # アーティファクトとして PDF をアップロードする
       - name: Upload PDF as artifact
@@ -57,6 +56,7 @@ jobs:
         with:
           name: "ebook.pdf"
           path: "${{ env.PDF_PATH }}"
+          retention-days: 7
           if-no-files-found: error
           archive: false
 

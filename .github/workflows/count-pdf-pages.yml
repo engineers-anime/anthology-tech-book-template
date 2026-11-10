@@ -16,7 +16,6 @@ jobs:
     env:
       # 生成される PDF のパス
       EBOOK_PDF_PATH: ./book/output/ebook.pdf
-      EBOOK_COVERED_PDF_PATH: ./book/output/ebook_covered.pdf
       PRESS_PDF_PATH: ./book/output/press.pdf
       COVER_PNG_PATH: ./book/cover/cover.png
       COVER_PSD_PATH: ./book/cover/*.psd
@@ -24,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -53,6 +52,7 @@ jobs:
         id: pagecount
         run: |
           set -euo pipefail
+          yarn verify:pdf "$EBOOK_PDF_PATH"
           EBOOK_PAGES="$(pdfinfo "$EBOOK_PDF_PATH" | awk '/^Pages:/ {print $2}')"
           echo "電子版 PDF のページ数: ${EBOOK_PAGES}"
           echo "ebook=${EBOOK_PAGES}" >> "$GITHUB_OUTPUT"

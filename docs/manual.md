@@ -45,17 +45,16 @@
 
 - **アイコン画像**: `book/manuscripts/images_authors/` フォルダの中に、自分のアイコン画像を配置してください。ファイル名は `<ユーザー名>.<拡張子>`（例: `ohkura.png`）としてください。
 - **設定値**: `book.json` の `icon` フィールドには、**パスを含まないファイル名のみ**（例: `ohkura.png`）を記述してください。
-- **Discord**: Discordのユーザー名またはIDを記載してください。これは主催者からの連絡や、進捗確認などの円滑なコミュニケーションのために使用します（**本には掲載されません**）。
-    - 数字のみのID（例: `123456789012345678`）を記載すると、フィードバック時にDiscordでメンションが飛びます。
-    - IDの取得方法は、Discordの「ユーザー設定 > 詳細設定 > 開発者モード」をONにした後、自分のプロフィールを右クリックして「ユーザーIDをコピー」してください。
+- **Discord**: Discordのユーザー名を記載してください。これは主催者からの連絡や、進捗確認などの円滑なコミュニケーションのために使用します（**本には掲載されません**）。
+- **GitHub**: GitHubのユーザー名を記載してください（**本には掲載されません**）。
 - **反映**: ここに登録された情報をもとに、目次、PDFの構成（章の順番）、著者紹介ページ、および各原稿内のタイトル・著者名が自動生成・同期されます。
-
 ```json
 {
   "name": "名前",
   "icon": "ユーザー名.拡張子",
   "x": "@TwitterID",
-  "discord": "123456789012345678",
+  "discord": "ユーザー名",
+  "github": "ユーザー名",
   "job": "職業/肩書き",
   "favorites": ["好きなアニメ1", "好きなアニメ2"],
   "articles": [
@@ -84,6 +83,25 @@ yarn install
 # 同期・ビルド・PDF表示（すべて一括）
 yarn start
 ```
+
+### PDF の書籍タイトルとフォントを検査する
+
+Poppler をインストールすると、PDF から書籍タイトルを抽出できることと、指定したフォントが埋め込まれていることを確認できます。macOS では `brew install poppler`、Ubuntu では `sudo apt-get install poppler-utils` でインストールできます。
+
+```shell
+yarn verify:pdf
+yarn verify:pdf path/to/ebook.pdf
+```
+
+フォントを差し替えた場合は、`pdffonts` に表示されるフォント名の共通の接頭辞を `book/manuscripts/book.json` の `pdfFontPrefix` に指定します。先頭のサブセット識別子（例 `ABCDEF+`）は除いてください。既定値は `NotoSansJP-` です。
+
+GitHub Actions でも PR の PDF 添付、リリース、ページ数通知の前に電子版 PDF を検査します。印刷入稿用 PDF は入稿処理で文字がアウトライン化される場合があるため、CI では生成結果の存在を確認します。
+
+### PR 確認用 PDF の保存と整理
+
+PR で生成した `ebook.pdf` は7日間保存されます。以前にアップロードした PDF を整理する場合は、GitHub Actions の「Clean up ebook PDF artifacts」を手動で実行します。
+
+既定では削除候補を実行結果のサマリーに表示します。削除する場合は、基準日時を日本時間の `YYYY-MM-DD HH:MM` 形式で入力し、`delete_artifacts` を有効にします。基準日時より前に作成された `ebook.pdf` が対象です。
 
 ---
 
